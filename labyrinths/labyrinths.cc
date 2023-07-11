@@ -7,10 +7,8 @@
 using ::labyrinths::ActionType;
 using ::labyrinths::Parse;
 using ::labyrinths::ParseResult;
-using ::labyrinths::PopulateWorld;
+using ::labyrinths::NewEmptyWorld;
 using ::labyrinths::Room;
-using ::labyrinths::ToWorldIndex;
-using ::labyrinths::Vec2i;
 using ::labyrinths::World;
 
 int main(int argc, char **argv) {
@@ -18,17 +16,19 @@ int main(int argc, char **argv) {
   std::cout << "© Robert Berry, 2023" << std::endl;
   std::cout << std::endl;
 
-  World world;
-  PopulateWorld(world);
-
-  Vec2i position(1, 1);
+  World world = NewEmptyWorld();
 
   bool running = true;
+  int player_position = 0;
 
   while (running) {
-    int index = ToWorldIndex(position);
-    Room& room = world.rooms[index];
-    std::cout << "You are at " << room.name << std::endl;
+    Room& room = world.rooms[player_position];
+    if (room.visited) {
+      std::cout << "Location: " << room.name << std::endl;
+    } else {
+      std::cout << room.description << std::endl;
+      room.visited = true;;
+    }
 
     ParseResult result = Parse(std::cin);
     if (result.action_type == ActionType::kUnknownAction) {

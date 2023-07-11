@@ -1,38 +1,43 @@
 #ifndef LABYRINTHS_WORLD_H_
 #define LABYRINTHS_WORLD_H_
 
-#include <string_view>
+#include <string>
+#include <vector>
 
 #include "labyrinths/vec2i.h"
 
 namespace labyrinths {
 
-inline constexpr int kWorldWidth = 3;
-inline constexpr int kWorldHeight = 3;
+enum class Direction {
+  kNorth,
+  kNorthEast,
+  kEast,
+  kSouthEast,
+  kSouth,
+  kSouthWest,
+  kWest,
+  kNorthWest,
+  kUp,
+  kDown
+};
 
-inline constexpr int kExitNorth = 1;
-inline constexpr int kExitNorthEast = 2;
-inline constexpr int kExitEast = 4;
-inline constexpr int kExitSouthEast = 8;
-inline constexpr int kExitSouth = 16;
-inline constexpr int kExitSouthWest = 32;
-inline constexpr int kExitWest = 64;
-inline constexpr int kExitNorthWest = 128;
+struct Exit {
+  Direction direction;
+  int room_id;
+};
 
 struct Room {
-  std::string_view name;
-  int exits;
+  std::string name;
+  std::string description;
+  bool visited;
+  std::vector<Exit> exits;
 };
 
 struct World {
-  Room rooms[kWorldWidth * kWorldHeight];
+  std::vector<Room> rooms;
 };
 
-void PopulateWorld(World& world);
-
-inline int ToWorldIndex(const Vec2i& position) {
-  return position.x() + position.y() * kWorldWidth;
-}
+World NewEmptyWorld();
 
 }  // namespace labyrinths
 
